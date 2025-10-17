@@ -10,7 +10,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
@@ -35,8 +38,13 @@ class HomeActivity : AppCompatActivity() {
         val addImageView: ImageView = findViewById(R.id.home_addImageView)
         val avatarImage: ImageView = findViewById(R.id.home_avatarImageView)
         val refreshButton: Button = findViewById(R.id.home_refreshButton)
-
+        val recyclerView: RecyclerView = findViewById(R.id.homeRecyclerView)
         val db = Firebase.firestore
+
+        val posts = mutableListOf<Post>()
+        val postsAdapter = PostsAdapter(posts)
+        recyclerView.adapter = postsAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
         Picasso.get().load("https://i.imgur.com/DvpvklR.png").into(avatarImage);
         welcomeTextView.text = "Welcome " + auth.currentUser?.email
@@ -58,9 +66,18 @@ class HomeActivity : AppCompatActivity() {
         db.collection("posts")
             .get()
             .addOnSuccessListener { result ->
+                posts.clear()
                 for (document in result) {
-                    Log.d("documents", "${document.id} => ${document.data}")
+                    //Log.d("documents", "${document.id} => ${document.data}")
+                    val timestamp = document.data["timestamp"] as Timestamp
+                    posts.add(Post(document.id,
+                        document.data["uid"].toString(),
+                        document.data["title"].toString(),
+                        document.data["imgURL"].toString(),
+                        document.data["description"].toString(),
+                        timestamp))
                 }
+                postsAdapter.notifyDataSetChanged()
             }
             .addOnFailureListener { exception ->
                 Log.d("documents", "Error getting documents: ", exception)
@@ -70,9 +87,18 @@ class HomeActivity : AppCompatActivity() {
             db.collection("posts")
                 .get()
                 .addOnSuccessListener { result ->
+                    posts.clear()
                     for (document in result) {
-                        Log.d("documents", "${document.id} => ${document.data}")
+                        //Log.d("documents", "${document.id} => ${document.data}")
+                        val timestamp = document.data["timestamp"] as Timestamp
+                        posts.add(Post(document.id,
+                            document.data["uid"].toString(),
+                            document.data["title"].toString(),
+                            document.data["imgURL"].toString(),
+                            document.data["description"].toString(),
+                            timestamp))
                     }
+                    postsAdapter.notifyDataSetChanged()
                 }
                 .addOnFailureListener { exception ->
                     Log.d("documents", "Error getting documents: ", exception)
