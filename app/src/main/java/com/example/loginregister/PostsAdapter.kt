@@ -1,5 +1,6 @@
 package com.example.loginregister
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,12 @@ class PostsAdapter(val posts: MutableList<Post>) : RecyclerView.Adapter<PostsAda
         val date: TextView = holder.itemView.findViewById(R.id.itemDate)
         val favoriteImage: ImageView = holder.itemView.findViewById(R.id.itemFavoriteImage)
         val counter: TextView = holder.itemView.findViewById(R.id.itemCounterFavorites)
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(holder.itemView.context, SinglePostActivity::class.java)
+            intent.putExtra("pid", posts[position].id)
+            holder.itemView.context.startActivity(intent)
+        }
 
         val docRef = db.collection("favorites").document(auth.currentUser?.uid.toString() + ":" + posts[position].id)
         docRef.get()
