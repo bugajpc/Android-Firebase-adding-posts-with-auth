@@ -37,10 +37,13 @@ class PostsAdapter(val posts: MutableList<Post>) : RecyclerView.Adapter<PostsAda
         val date: TextView = holder.itemView.findViewById(R.id.itemDate)
         val favoriteImage: ImageView = holder.itemView.findViewById(R.id.itemFavoriteImage)
         val counter: TextView = holder.itemView.findViewById(R.id.itemCounterFavorites)
-
+        var nOfLikes: Int = 0
+        var isLiked: Boolean = false
         holder.itemView.setOnClickListener {
             val intent = Intent(holder.itemView.context, SinglePostActivity::class.java)
             intent.putExtra("pid", posts[position].id)
+            intent.putExtra("nOfLikes", nOfLikes)
+            intent.putExtra("isLiked", isLiked)
             holder.itemView.context.startActivity(intent)
         }
 
@@ -50,6 +53,7 @@ class PostsAdapter(val posts: MutableList<Post>) : RecyclerView.Adapter<PostsAda
                 if (document.exists()) {
                     Log.d("TAG", "DocumentSnapshot data: ${document.data}")
                     favoriteImage.setImageResource(R.drawable.baseline_favorite_24)
+                    isLiked = true
                 } else {
                     Log.d("TAG", "No such document")
                 }
@@ -63,6 +67,7 @@ class PostsAdapter(val posts: MutableList<Post>) : RecyclerView.Adapter<PostsAda
             .get()
             .addOnSuccessListener { documents ->
                 counter.text = documents.size().toString()
+                nOfLikes = documents.size()
             }
             .addOnFailureListener { exception ->
                 Log.w("TAG", "Error getting documents: ", exception)
