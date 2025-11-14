@@ -14,9 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
         <activity
-            android:name=".SinglePostActivity"
+            android:name=".EditPostActivity"
             android:parentActivityName=".HomeActivity"
             android:exported="false" />
+        <activity
+            android:name=".SinglePostActivity"
+            android:exported="false"
+            android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".AddPostActivity"
             android:exported="false"

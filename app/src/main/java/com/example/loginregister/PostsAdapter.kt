@@ -37,6 +37,7 @@ class PostsAdapter(val posts: MutableList<Post>) : RecyclerView.Adapter<PostsAda
         val date: TextView = holder.itemView.findViewById(R.id.itemDate)
         val favoriteImage: ImageView = holder.itemView.findViewById(R.id.itemFavoriteImage)
         val counter: TextView = holder.itemView.findViewById(R.id.itemCounterFavorites)
+        val editItem: TextView = holder.itemView.findViewById(R.id.itemEdit)
         var nOfLikes: Int = 0
         var isLiked: Boolean = false
         holder.itemView.setOnClickListener {
@@ -44,6 +45,17 @@ class PostsAdapter(val posts: MutableList<Post>) : RecyclerView.Adapter<PostsAda
             intent.putExtra("pid", posts[position].id)
             intent.putExtra("nOfLikes", nOfLikes)
             intent.putExtra("isLiked", isLiked)
+            holder.itemView.context.startActivity(intent)
+        }
+
+        editItem.setOnClickListener {
+            val intent = Intent(holder.itemView.context, EditPostActivity::class.java)
+            intent.putExtra("pid", posts[position].id)
+            intent.putExtra("imgURL", posts[position].imgURL)
+            intent.putExtra("title", posts[position].title)
+            intent.putExtra("date", posts[position].date)
+            intent.putExtra("uid", posts[position].uid)
+            intent.putExtra("description", posts[position].description)
             holder.itemView.context.startActivity(intent)
         }
 
